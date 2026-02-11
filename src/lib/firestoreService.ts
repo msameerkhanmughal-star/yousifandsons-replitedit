@@ -8,19 +8,9 @@ import {
   onSnapshot,
   query,
   orderBy,
-  Timestamp,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager
+  Timestamp
 } from 'firebase/firestore';
-import { db, app } from './firebase';
-
-// Re-initialize Firestore with better cache settings for multi-tab support
-const firestore = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentMultipleTabManager()
-  })
-});
+import { db } from './firebase';
 
 import { Rental, Vehicle } from '@/types/rental';
 
@@ -28,9 +18,9 @@ import { Rental, Vehicle } from '@/types/rental';
 const RENTALS_COLLECTION = 'rentals';
 const VEHICLES_COLLECTION = 'vehicles';
 
-// Use the new firestore instance
+// Use the db instance from firebase.ts
 export const subscribeToRentals = (callback: (rentals: Rental[]) => void) => {
-  const q = query(collection(firestore, RENTALS_COLLECTION), orderBy('createdAt', 'desc'));
+  const q = query(collection(db, RENTALS_COLLECTION), orderBy('createdAt', 'desc'));
   
   return onSnapshot(q, (snapshot) => {
     const rentals: Rental[] = [];
